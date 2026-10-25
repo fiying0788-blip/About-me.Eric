@@ -806,7 +806,7 @@ export const PMSimulatorGame = () => {
           isZoomed ? "max-w-4xl" : ""
         }`}
       >
-        {/* ── Mac Title Bar (保持不動) ── */}
+ {/* ── Mac Title Bar (放大按鈕已改為淡橘色閃爍) ── */}
         <div
           className="flex items-center justify-between px-4 relative bg-gray-50 border-b border-gray-100"
           style={{ height: 44 }}
@@ -835,9 +835,10 @@ export const PMSimulatorGame = () => {
               <span className="font-mono">{unlockedBadges.size}/10</span>
             </button>
 
+            {/* ── 醒目的淡橘色閃爍放大按鈕 ── */}
             <button
               onClick={() => setIsZoomed(!isZoomed)}
-              className="flex items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-200/80 text-gray-400 hover:text-gray-700 transition-colors text-[11px] cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 border border-amber-500/40 animate-pulse transition-all text-[11px] font-bold cursor-pointer shadow-sm"
             >
               <span>{isZoomed ? "❐" : "⛶"}</span>
               <span className="hidden sm:inline">{isZoomed ? "縮小" : "放大"}</span>
@@ -858,7 +859,7 @@ export const PMSimulatorGame = () => {
             </div>
           </div>
         </div>
-
+        
         {/* ── Game Viewport (高度界線不變，微調內距與內部元件高度) ── */}
         <div
           className="relative bg-[#0F172A] p-2.5 sm:p-3 flex flex-col justify-between text-white overflow-hidden"
