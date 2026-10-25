@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import {
   ChevronDown,
@@ -35,6 +35,18 @@ import {
   BarChart3,
   PenLine,
   Star,
+  ChevronRight,
+  Gamepad2,
+  Maximize2,
+  Minimize2,
+  ExternalLink,
+  Copy,
+  Check,
+  Laptop,
+  User,
+  Phone,
+  MessageSquare,
+  Loader2
 } from "lucide-react";
 
 // ─── HOOKS ──────────────────────────────────────────────────────────────────
@@ -306,30 +318,30 @@ const SKILLS = [
 
 const ACHIEVEMENTS = [
   {
-    label: "交付專案",
-    value: 20,
-    suffix: "+",
+    label: "完整交付專案",
+    value: 2,
+    suffix: "",
     Icon: CheckCheck,
     color: "#4F7DF7",
   },
   {
-    label: "政府專案",
-    value: 8,
+    label: "參與招標數",
+    value: 4,
     suffix: "",
     Icon: Building2,
     color: "#8B5CF6",
   },
   {
-    label: "主持會議",
-    value: 300,
+    label: "撰寫規格文件數",
+    value: 1000,
     suffix: "+",
     Icon: Users,
     color: "#10B981",
   },
   {
     label: "正式簡報",
-    value: 50,
-    suffix: "+",
+    value: 6,
+    suffix: "",
     Icon: Layers,
     color: "#F59E0B",
   },
@@ -439,6 +451,7 @@ function Nav() {
         >
           Eric T.
         </a>
+
         <div className="hidden md:flex items-center gap-8">
           {links.map((l) => (
             <a
@@ -450,254 +463,636 @@ function Nav() {
             </a>
           ))}
         </div>
-        <a
-          href="#contact"
-          className="bg-[#4F7DF7] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#3B6EF2] transition-all duration-200 shadow-sm hover:shadow-md"
-        >
-          下載履歷
-        </a>
+
+        {/* 右側：只保留最後修改時間標籤 */}
+        <div className="flex items-center">
+          <span className="text-xs font-mono text-gray-400 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+            Updated: 2026.10
+          </span>
+        </div>
       </div>
     </nav>
   );
 }
 
-// ─── FLOATING DASHBOARD ─────────────────────────────────────────────────────
+// ─── PM SIMULATOR GAME ──────────────────────────────────────────────────────
 
-function FloatingDashboard() {
-  const [tasks, setTasks] = useState([
-    true,
-    true,
-    true,
-    true,
-    false,
-  ]);
-  const toggleTask = (i: number) =>
-    setTasks((t) => t.map((v, idx) => (idx === i ? !v : v)));
-
-  const taskLabels = [
-    "確認 API 文件格式",
-    "與 IT 部門進行會議前置",
-    "更新風險登錄表",
-    "審核整合測試報告",
-    "準備本週進度週報",
+export const PMSimulatorGame = () => {
+  // ── 5 大關卡題庫資料 ──
+  const GAME_STAGES = [
+    {
+      stage: 1,
+      title: "STAGE 1 / 5",
+      prompt: "請選擇您想了解的【生涯規劃與經歷】：",
+      options: [
+        {
+          key: "A",
+          label: "A. 「如果進入公司三個月，你希望自己達成什麼？」",
+          myAnswer: "「我希望前三個月先熟悉公司的專案流程、業務領域、系統架構與團隊分工，並逐步承接分配給我的工作內容。同時，我也會期待能更深入涉略 AI 應用，在熟悉工作後，嘗試找出可以提升效率的應用機會。」",
+          hpChange: 10,
+          auxIcon: "🎨",
+          auxTitle: "轉換跑道",
+          auxDesc: "先穩定短期適應，再來鋪墊中期成長目標。"
+        },
+        {
+          key: "B",
+          label: "B. 「你未來 2～3 年想成為什麼樣的角色？」",
+          myAnswer: "「我希望能成為精準釐清需求與服務範圍，具備宏觀專案藍圖，與團隊共同推進專案目標的政府專案經理。」",
+          hpChange: 8,
+          auxIcon: "🎯",
+          auxTitle: "職涯發展目標",
+          auxDesc: "在未來我會期待能補足「審查與驗收對接能力」，以及產業解決問題或分析相關經驗，完善作為專案管理者的技能包。"
+        },
+        {
+          key: "C",
+          label: "C. 「為什麼想從現在的公司離開？」",
+          myAnswer: "「很感謝前一份工作主管及同事的提攜與指導，不過我希望下一階段能接觸不同類型的資訊專案，進一步拓展自己的技術理解與專案管理能力，同時也希望透過轉換工作環境，讓思考方式更具彈性。」",
+          hpChange: 6,
+          auxIcon: "📖",
+          auxTitle: "展望未來",
+          auxDesc: "希望下一間公司飲水機旁邊那台是咖啡機…"
+        }
+      ]
+    },
+    {
+      stage: 2,
+      title: "STAGE 2 / 5",
+      prompt: "請選擇關於【專案經驗】的提問：",
+      options: [
+        {
+          key: "A",
+          label: "A. 「你在這個專案中實際負責哪些事情？」",
+          myAnswer: "「過去在主管的指導與授權下，從前期需求訪談、中期開發協調與驗收交付，到招標文件與各期成果報告撰寫皆全程參與；也負責系統維運與精進、依約協調第三方完成各項資安與軟體檢測，並曾主導辦理系統說明會 (含議程規劃與現場主講)。」",
+          hpChange: 10,
+          auxIcon: "📐",
+          auxTitle: "計畫內容",
+          auxDesc: "完整經歷政府專案全生命周期實務經驗約 2 年，思考並執行專案各項業務面、軟體系統面任務。"
+        },
+        {
+          key: "B",
+          label: "B. 「有沒有遇過工程師說「這個做不到」？你怎麼辦？」",
+          myAnswer: "「我會先釐清工程師『做不到』的技術原因，並拆解業者『真正要』的底層需求。透過尋找替代方案與評估成本，在技術限制與商業目標之間，找出可執行的折衷解法。」",
+          hpChange: 12,
+          auxIcon: "🛡️",
+          auxTitle: "開發推進",
+          auxDesc: "1. 釐清原因：確認工程師是受限於技術、既有架構還是時程。\n2. 回歸需求：了解業主真正的目標或需求，評估是否有替代方案。\n3. 確認決策：整理可行方案與影響評估，與主管 (或同仁) 討論後再進行對外溝通。"
+        },
+        {
+          key: "C",
+          label: "C. 「如果業主提出的需求會影響時程，你怎麼處理？」",
+          myAnswer: "「我會先看這到底是急件還是追加範疇，並找工程師算一下工時跟替代方案，如果無法如期交付，也會在評估後優先告知業主。」",
+          hpChange: 8,
+          auxIcon: "⚖️",
+          auxTitle: "追加/調整需求時程管理",
+          auxDesc: "可用說法：調整執行/開發順序；分階段交付。"
+        }
+      ]
+    },
+    {
+      stage: 3,
+      title: "STAGE 3 / 5",
+      prompt: "請選擇關於【需求分析與規格】的提問：",
+      options: [
+        {
+          key: "A",
+          label: "A. 「你怎麼判斷一個系統問題是不是急需改善？」",
+          myAnswer: "「我會評估影響程度、影響範圍、發生頻率，以及是否有替代處理方式這幾個面向來判斷。」",
+          hpChange: 10,
+          auxIcon: "📊",
+          auxTitle: "系統精進決策",
+          auxDesc: "影響程度：涉及資安、法規或合約，以及造成系統無法使用、核心業務中斷等優先處理。\n影響範圍：影響多少使用者或功能。\n發生頻率：是不是有重複發生的可能。"
+        },
+        {
+          key: "B",
+          label: "B. 「我寫的需求文件 (PPT) 通常會包含哪些內容？」",
+          myAnswer: "「建置目的說明、業務流程圖、系統架構圖、現有畫面、預計畫面 (含規則說明)，也會依開發內容或資訊團隊反饋調整。」",
+          hpChange: 10,
+          auxIcon: "📋",
+          auxTitle: "交付開發",
+          auxDesc: "畫面有時候也是會用 AI 協助產出線稿圖~"
+        },
+        {
+          key: "C",
+          label: "C. 「要全面改寫系統，我會想把它變成怎麼樣？」",
+          myAnswer: "「我會考量是否達成系統建置目的、視覺與排版一致性，不選用過多顏色、符合現代使用習慣的操作流程、技術與安全性。」",
+          hpChange: 8,
+          auxIcon: "🔄",
+          auxTitle: "改寫整合",
+          auxDesc: "「如果可以，我會希望這個按鈕多設置一個可以讓使用者停下來看個 2 分鐘的懸停 (HOVER) 動畫~」"
+        }
+      ]
+    },
+    {
+      stage: 4,
+      title: "STAGE 4 / 5",
+      prompt: "請選擇關於【技術理解與開發決策】的提問：",
+      options: [
+        {
+          key: "A",
+          label: "A. 「你如何跟非技術背景的業主溝通技術問題？」",
+          myAnswer: "「我會先了解技術限制，盡可能以舉例的方式進行說明，同時把重點放在之後會發生什麼事以及替代方案討論。」",
+          hpChange: 8,
+          auxIcon: "⚡",
+          auxTitle: "轉譯問題",
+          auxDesc: "問題：業主希望能一鍵下載過去 5 年、數百萬筆的完整交易或定位紀錄 Excel 表格。\n技術面回答：一次性 Query 查詢巨量資料會佔滿資料庫記憶體，也可能導致 TIMEOUT。\n這就像要求店員一口氣把整個書店的書搬到櫃檯給你，店員會忙到顧不了其他後面結帳的人，櫃檯桌子也擺不下 (記憶體爆掉)。"
+        },
+        {
+          key: "B",
+          label: "B. 「工程師抱怨 Code 寫太爛想花兩週重構，你支持嗎？」",
+          myAnswer: "「請工程師評估重構帶來的商業價值與後續維護效益，若評估可行也會盡可能協助提供業務面資訊，並於成果報告描述該項自主精進內容。」",
+          hpChange: 10,
+          auxIcon: "🛠️",
+          auxTitle: "避免技術債",
+          auxDesc: "不知道 AI 是不是已經可以幫助他們解決重構的時間壓力?"
+        },
+        {
+          key: "C",
+          label: "C. 「功能上線前，你認為 PM 應該注意哪些事情？」",
+          myAnswer: "「我會確保有申請進入機房 (部分專案機房建置於機關統一管理)；事先完成測試以及上線可測試部分；確認現場人員知道更新失敗時解決方法；最後留意流程安全性及符合相關資安規定。」",
+          hpChange: 10,
+          auxIcon: "🛑",
+          auxTitle: "上線檢核",
+          auxDesc: "原則第 1 條：不要週五上線!!"
+        }
+      ]
+    },
+    {
+      stage: 5,
+      title: "STAGE 5 / 5",
+      prompt: "請選擇您想抽考的【處理非制式問題】：",
+      options: [
+        {
+          key: "A",
+          label: "A. 「若使用者抱怨法規或機關行政流程等根本性問題，該怎麼辦？」",
+          myAnswer: "「先了解使用者遇到的具體問題，再區分問題是來自法規限制、機關既有流程，還是系統設計不夠友善。」",
+          hpChange: 8,
+          auxIcon: "🏆",
+          auxTitle: "既有規定釋疑",
+          auxDesc: "如果是涉及法規或機關權責，先向主管或權責單位確認或討論；若是系統可以改善的部分，就會評估是否能透過調整操作流程、畫面或功能，降低使用者的負擔。"
+        },
+        {
+          key: "B",
+          label: "B. 「業主提出非合約工作要求協助，是否幫助他？」",
+          myAnswer: "「我會先了解需求緣由與急迫性，確認整體專案目標差異，先行評估所需資源後請示主管做決策。」",
+          hpChange: 6,
+          auxIcon: "🎵",
+          auxTitle: "團隊凝聚力",
+          auxDesc: "我認為 PM 要維持良好的利害關係人合作關係，但也要守住專案範疇，降低額外工作影響排程的程度。"
+        },
+        {
+          key: "C",
+          label: "C. 「若業主在非上班日時提出緊急需求，過去曾怎麼應對？」",
+          myAnswer: "「如果是詢問系統邏輯或資料查詢，我會先了解問題並視情況協助；如果是系統重大異常，也會優先初步釐清與評估，必要時聯繫工程師或主管。至於非立即性的問題，我會盡量安排在上班時間處理。」",
+          hpChange: 10,
+          auxIcon: "🚀",
+          auxTitle: "緊急處理",
+          auxDesc: "下班時間還是可以適當提供服務，但不是免費的!"
+        }
+      ]
+    }
   ];
 
-  return (
-    <div className="relative w-full h-[520px] select-none">
-      <div className="absolute top-12 left-1/2 -translate-x-1/4 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
+  const ALL_BADGES = [
+    { id: 'first_touch', name: '新手使用者', icon: '🔰' },
+    { id: 'full_clear', name: '完美全勤賞', icon: '🏆' },
+    { id: 'same_option_3x', name: '這個選項要按幾次XD', icon: '🅰️' },
+    { id: 'high_sat', name: '面試好感度爆表', icon: '💖' },
+    { id: 'bookstore', name: '書店搬書大師', icon: '📚' },
+    { id: 'friday_off', name: '週五不上線守護者', icon: '🛡️' },
+    { id: 'coffee', name: '咖啡機信仰者', icon: '☕' },
+    { id: 'hover_2min', name: '懸停 2 分鐘迷戀者', icon: '✨' },
+    { id: 'off_hours', name: '夜間緊急應援手', icon: '🌙' },
+    { id: 'ai_pioneer', name: 'AI 效率探索者', icon: '🤖' }
+  ];
 
-      {/* Today's Tasks */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-0 left-0 w-72 bg-white rounded-2xl border border-gray-100 shadow-lg p-5 z-10"
+  // ── State 宣告 ──
+  const [gameState, setGameState] = useState<"start" | "play" | "result">("start");
+  const [currentStageIndex, setCurrentStageIndex] = useState(0);
+  const [satisfaction, setSatisfaction] = useState(30);
+  const [selectedOptionKey, setSelectedOptionKey] = useState<string | null>(null);
+  
+  const [ericResponse, setEricResponse] = useState("等待中...");
+  const [auxData, setAuxData] = useState({
+    icon: "💡",
+    title: "補充說明",
+     desc: "我來想想💭"
+  });
+
+  const [unlockedBadges, setUnlockedBadges] = useState<Set<string>>(new Set());
+  const [userChoiceHistory, setUserChoiceHistory] = useState<string[]>([]);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const [toastInfo, setToastInfo] = useState<{ visible: boolean; name: string; icon: string }>({
+    visible: false,
+    name: "",
+    icon: ""
+  });
+
+  const stage = GAME_STAGES[currentStageIndex];
+
+  function unlockBadge(badgeId: string) {
+    if (unlockedBadges.has(badgeId)) return;
+    setUnlockedBadges((prev) => new Set(prev).add(badgeId));
+    
+    const badge = ALL_BADGES.find((b) => b.id === badgeId);
+    if (badge) {
+      setToastInfo({ visible: true, name: badge.name, icon: badge.icon });
+      setTimeout(() => {
+        setToastInfo({ visible: false, name: "", icon: "" });
+      }, 3000);
+    }
+  }
+
+  function startGame() {
+    setGameState("play");
+    setCurrentStageIndex(0);
+    setSatisfaction(30);
+    setSelectedOptionKey(null);
+    setUserChoiceHistory([]);
+    setEricResponse("等待中...");
+    setAuxData({
+      icon: "💡",
+       title: "補充說明",
+       desc: "我來想想💭"
+    });
+  }
+
+  function handleOptionSelect(option: typeof stage.options[0]) {
+    if (selectedOptionKey) return;
+
+    setSelectedOptionKey(option.key);
+    const newHistory = [...userChoiceHistory, option.key];
+    setUserChoiceHistory(newHistory);
+
+    unlockBadge('first_touch');
+
+    const counts = newHistory.reduce((acc, curr) => {
+      acc[curr] = (acc[curr] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    if (Object.values(counts).some((c) => c >= 3)) {
+      unlockBadge('same_option_3x');
+    }
+
+    if (currentStageIndex === 0 && option.key === 'A') unlockBadge('ai_pioneer');
+    if (currentStageIndex === 0 && option.key === 'C') unlockBadge('coffee');
+    if (currentStageIndex === 2 && option.key === 'C') unlockBadge('hover_2min');
+    if (currentStageIndex === 3 && option.key === 'A') unlockBadge('bookstore');
+    if (currentStageIndex === 3 && option.key === 'C') unlockBadge('friday_off');
+    if (currentStageIndex === 4 && option.key === 'C') unlockBadge('off_hours');
+
+    setEricResponse(option.myAnswer);
+    setAuxData({
+      icon: option.auxIcon,
+      title: option.auxTitle,
+      desc: option.auxDesc
+    });
+
+    setSatisfaction((prev) => Math.min(100, Math.max(0, prev + option.hpChange)));
+  }
+
+  function nextStage() {
+    if (currentStageIndex < GAME_STAGES.length - 1) {
+      setCurrentStageIndex((c) => c + 1);
+      setSelectedOptionKey(null);
+      setEricResponse("等待中...");
+      setAuxData({
+        icon: "💡",
+        title: "補充說明",
+        desc: "我來想想💭"
+      });
+    } else {
+      setGameState("result");
+      unlockBadge('full_clear');
+      if (satisfaction >= 75) unlockBadge('high_sat');
+    }
+  }
+
+  function exitGame() {
+    setGameState("start");
+    setIsZoomed(false);
+  }
+
+  function getResultText() {
+    if (satisfaction >= 75) {
+      return {
+        title: "🔍 了解程度：超級了解",
+        desc: "既然我們的邏輯跟幽默感都在同個頻率——是時候找他來當面聊聊了！"
+      };
+    } else if (satisfaction >= 55) {
+      return {
+        title: "🔍 了解程度：普通了解",
+        desc: "你已經抓到我大方向的作風，與其線上猜測——是時候找他來當面聊聊了！"
+      };
+    } else {
+      return {
+        title: "🔍 了解程度：還不太了解",
+        desc: "看來你只是快速過場，想知道更多——是時候找他來當面聊聊了！"
+      };
+    }
+  }
+
+  return (
+    <div
+      className={
+        isZoomed
+          ? "fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+          : "relative w-full max-w-2xl mx-auto select-none"
+      }
+    >
+      <div
+        className={`relative w-full select-none rounded-3xl overflow-hidden shadow-2xl border border-gray-200 bg-white ${
+          isZoomed ? "max-w-4xl" : ""
+        }`}
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold text-gray-800">
-            今日任務
-          </span>
-          <span className="text-xs font-medium text-[#4F7DF7] bg-blue-50 px-2 py-0.5 rounded-full">
-            {tasks.filter(Boolean).length}/{tasks.length}
-          </span>
-        </div>
-        <div className="space-y-2">
-          {taskLabels.map((t, i) => (
-            <button
-              key={i}
-              onClick={() => toggleTask(i)}
-              className="w-full flex items-center gap-2.5 group text-left"
+        {/* ── Mac Title Bar ── */}
+        <div
+          className="flex items-center justify-between px-4 relative bg-gray-50 border-b border-gray-100"
+          style={{ height: 44 }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-rose-400" />
+            <div className="w-3 h-3 rounded-full bg-amber-400" />
+            <div className="w-3 h-3 rounded-full bg-emerald-400" />
+          </div>
+
+          <div className="flex items-center px-3 py-1 rounded-md bg-white border border-gray-200 shadow-inner">
+            <span
+              className="text-[11px] font-mono text-gray-500 flex items-center gap-1.5"
+              style={{ fontFamily: "monospace" }}
             >
-              <div
-                className={`w-4 h-4 rounded flex-shrink-0 flex items-center justify-center transition-all ${
-                  tasks[i]
-                    ? "bg-[#4F7DF7]"
-                    : "border-2 border-gray-200 group-hover:border-[#4F7DF7]"
-                }`}
+              🎮 pm-simulator.game/interview {isZoomed ? "(Expanded)" : ""}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowDrawer(!showDrawer)}
+              className="flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/20 transition-all text-[11px] font-bold cursor-pointer"
+            >
+              <span>🏅</span>
+              <span className="font-mono">{unlockedBadges.size}/10</span>
+            </button>
+
+            <button
+              onClick={() => setIsZoomed(!isZoomed)}
+              className="flex items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-200/80 text-gray-400 hover:text-gray-700 transition-colors text-[11px] cursor-pointer"
+            >
+              <span>{isZoomed ? "❐" : "⛶"}</span>
+              <span className="hidden sm:inline">{isZoomed ? "縮小" : "放大"}</span>
+            </button>
+          </div>
+
+          {/* 解鎖成就 Toast 提示 */}
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 top-1 z-30 transform transition-all duration-300 pointer-events-none ${
+              toastInfo.visible ? "translate-y-1 opacity-100" : "-translate-y-16 opacity-0"
+            }`}
+          >
+            <div className="bg-slate-900/95 border border-amber-400/60 text-white px-3.5 py-1.5 rounded-full shadow-xl backdrop-blur-md flex items-center gap-2">
+              <span className="text-sm animate-bounce">{toastInfo.icon}</span>
+              <span className="text-[11px] font-bold text-amber-300">
+                解鎖徽章：【{toastInfo.name}】
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Game Viewport ── */}
+        <div
+          className="relative bg-[#0F172A] p-5 flex flex-col justify-between text-white overflow-hidden"
+          style={{ height: isZoomed ? 580 : 480 }}
+        >
+          {/* 頂部 Status Bar */}
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3 z-10">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xs text-slate-400 font-semibold">猜你可能想了解</span>
+              <div className="w-28 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{
+                    width: `${satisfaction}%`,
+                    backgroundColor: satisfaction < 30 ? "#E44A38" : "#50B8AF"
+                  }}
+                />
+              </div>
+              <span className="text-xs font-bold text-teal-400 font-mono">
+                {satisfaction}%
+              </span>
+            </div>
+            <div>
+              <span className="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full font-mono">
+                STAGE {Math.min(currentStageIndex + 1, 5)}/5
+              </span>
+            </div>
+          </div>
+
+          {/* ── State 1: Start Screen ── */}
+          {gameState === "start" && (
+            <div className="flex flex-col items-center justify-center h-full text-center z-20">
+              <h3 className="text-xl font-black text-white mb-2">
+                一起坐下聊聊關於我的經歷吧!
+              </h3>
+              <p className="text-xs text-slate-400 mb-6 max-w-xs mx-auto leading-relaxed">
+                接下來共有 5 題的機會，您可以挑選問題聊聊，我也設計了10種成就，看看能不能全拿~
+              </p>
+              <button
+                onClick={startGame}
+                className="bg-[#4F7DF7] hover:bg-[#3B6EF2] text-xs font-bold px-7 py-3 rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
               >
-                {tasks[i] && (
-                  <svg
-                    className="w-2.5 h-2.5 text-white"
-                    fill="none"
-                    viewBox="0 0 10 8"
+                開始!
+              </button>
+            </div>
+          )}
+
+          {/* ── State 2: Gameplay ── */}
+          {gameState === "play" && (
+            <div className="flex-1 my-2 flex flex-col justify-between space-y-2.5">
+              {/* 頂部對話與卡片 Grid */}
+              <div className="grid grid-cols-12 gap-3 h-[190px]">
+                {/* 左側：像素頭像與 PM 對話框 */}
+                <div className="col-span-7 bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex items-start gap-2.5 overflow-y-auto">
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full border border-teal-500/50 overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                      <svg
+                        viewBox="0 0 64 64"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-full cursor-pointer"
+                      >
+                        <rect width="64" height="64" fill="#1E293B" />
+                        <circle cx="32" cy="32" r="28" fill="#334155" />
+                        <circle cx="32" cy="32" r="25" fill="#FEF3C7" opacity="0.3" />
+                        <rect x="10" y="58" width="44" height="2" fill="#475569" rx="1" />
+                        <rect x="20" y="10" width="24" height="24" rx="10" fill="#FED7AA" />
+                        <rect x="18" y="18" width="3" height="6" rx="1.5" fill="#FED7AA" />
+                        <rect x="43" y="18" width="3" height="6" rx="1.5" fill="#FED7AA" />
+                        <rect x="18" y="7" width="28" height="11" rx="4" fill="#0F172A" />
+                        <rect x="19" y="14" width="26" height="4" rx="1" fill="#0F172A" />
+                        <rect x="26" y="20" width="3" height="3" rx="1" fill="#020617" />
+                        <rect x="35" y="20" width="3" height="3" rx="1" fill="#020617" />
+                        <rect x="29" y="27" width="6" height="2" rx="1" fill="#F87171" />
+                        <rect x="18" y="34" width="28" height="24" rx="4" fill="#1E3A8A" />
+                        <path d="M 28 34 L 32 39 L 36 34 Z" fill="#1E40AF" />
+                        <rect x="31" y="39" width="2" height="15" fill="#1E40AF" opacity="0.4" />
+                        <g>
+                          <rect x="10" y="30" width="16" height="22" rx="2" fill="#F59E0B" />
+                          <rect x="14" y="28" width="8" height="3" rx="1" fill="#94A3B8" />
+                          <rect x="12" y="33" width="12" height="17" rx="1" fill="#FFFFFF" />
+                          <rect x="14" y="36" width="8" height="1.5" rx="0.75" fill="#CBD5E1" />
+                          <rect x="14" y="39" width="6" height="1.5" rx="0.75" fill="#CBD5E1" />
+                          <rect x="14" y="42" width="7" height="1.5" rx="0.75" fill="#CBD5E1" />
+                          <rect x="14" y="45" width="5" height="1.5" rx="0.75" fill="#3B82F6" />
+                          <rect x="8" y="42" width="6" height="7" rx="2" fill="#FED7AA" />
+                        </g>
+                        <rect x="40" y="36" width="6" height="18" rx="3" fill="#1E3A8A" />
+                        <rect x="40" y="52" width="5" height="5" rx="2" fill="#FED7AA" />
+                      </svg>
+                    </div>
+                    <span className="text-[10px] text-teal-400 font-mono mt-1">Eric T.</span>
+                  </div>
+
+                  <div className="bg-slate-800 border border-slate-700/80 rounded-lg p-2.5 text-left flex-1 min-h-full flex flex-col justify-center">
+                    <p className="text-[10px] text-teal-400 font-bold mb-1"> </p>
+                    <p className="text-xs text-slate-200 leading-relaxed">{ericResponse}</p>
+                  </div>
+                </div>
+
+                {/* 右側：輔助資訊卡 */}
+                <div className="col-span-5 bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between overflow-y-auto text-left">
+                  <div className="flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
+                    <span className="text-base">{auxData.icon}</span>
+                    <span className="text-xs text-teal-300 font-bold truncate">{auxData.title}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed my-auto whitespace-pre-line">
+                    {auxData.desc}
+                  </p>
+                </div>
+              </div>
+
+              {/* 中間提示列 */}
+              <div className="bg-slate-950/60 border border-slate-800 px-3.5 py-1.5 rounded-lg text-left">
+                <p className="text-xs text-slate-300 font-medium truncate">
+                  {selectedOptionKey
+                    ? "想再了解什麼~："
+                    : stage.prompt}
+                </p>
+              </div>
+
+              {/* 下方選項按鈕 */}
+              <div className="space-y-2 min-h-[160px] flex flex-col justify-center">
+                {!selectedOptionKey ? (
+                  stage.options.map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => handleOptionSelect(opt)}
+                      className="w-full text-left py-2 px-3 rounded-lg bg-slate-800/90 border border-slate-700/80 hover:border-[#4F7DF7] hover:bg-slate-800 transition-all duration-200 text-xs text-slate-100 flex items-center justify-between group cursor-pointer shadow-sm"
+                    >
+                      <span className="group-hover:text-[#4F7DF7] transition-colors truncate">
+                        {opt.label}
+                      </span>
+                      <span className="text-slate-500 group-hover:text-[#4F7DF7] text-xs">➔</span>
+                    </button>
+                  ))
+                ) : (
+                  <button
+                    onClick={nextStage}
+                    className="w-full py-2.5 bg-[#50B8AF] hover:bg-[#439c94] text-slate-900 font-bold text-xs rounded-lg transition-all shadow-md flex items-center justify-center space-x-1 cursor-pointer"
                   >
-                    <path
-                      d="M1 4l3 3 5-6"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                    <span>
+                      {currentStageIndex < GAME_STAGES.length - 1 ? "進入下一關" : "查看結果"}
+                    </span>
+                    <span>→</span>
+                  </button>
                 )}
               </div>
-              <span
-                className={`text-xs transition-colors ${tasks[i] ? "text-gray-400 line-through" : "text-gray-700"}`}
-              >
-                {t}
-              </span>
-            </button>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Project Progress */}
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5,
-        }}
-        className="absolute top-6 right-0 w-64 bg-white rounded-2xl border border-gray-100 shadow-lg p-5 z-20"
-      >
-        <span className="text-sm font-semibold text-gray-800 block mb-4">
-          專案進度
-        </span>
-        {[
-          { name: "資料交換平台", pct: 92, color: "#22C55E" },
-          { name: "智慧服務整合", pct: 65, color: "#4F7DF7" },
-          { name: "AI 文件系統", pct: 100, color: "#22C55E" },
-        ].map((p, i) => (
-          <div key={i} className="mb-3.5 last:mb-0">
-            <div className="flex justify-between mb-1.5">
-              <span className="text-xs text-gray-600">
-                {p.name}
-              </span>
-              <span
-                className="text-xs font-semibold"
-                style={{ color: p.color }}
-              >
-                {p.pct}%
-              </span>
             </div>
-            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${p.pct}%` }}
-                transition={{
-                  duration: 1.2,
-                  delay: i * 0.2,
-                  ease: "easeOut",
-                }}
-                className="h-full rounded-full"
-                style={{ backgroundColor: p.color }}
-              />
+          )}
+
+          {/* ── State 3: Result Screen ── */}
+          {gameState === "result" && (
+            <div className="flex flex-col items-center justify-center h-full text-center z-20">
+              <h3 className="text-xl font-black text-white mb-2">
+                {getResultText().title}
+              </h3>
+              <p className="text-xs text-slate-300 mb-6 max-w-sm mx-auto leading-relaxed">
+                {getResultText().desc}
+              </p>
+
+              {/* 雙按鈕：重玩一次 / 離開 */}
+              <div className="flex items-center justify-center gap-3 w-full max-w-xs">
+                <button
+                  onClick={startGame}
+                  className="flex-1 bg-[#4F7DF7] hover:bg-[#3B6EF2] text-xs font-bold py-2.5 rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  重玩一次
+                </button>
+                <button
+                  onClick={exitGame}
+                  className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs font-bold py-2.5 rounded-full transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  離開
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </motion.div>
+          )}
 
-      {/* Stat Badge */}
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{
-          duration: 4.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-        className="absolute top-52 left-44 bg-[#4F7DF7] text-white rounded-2xl shadow-xl p-3.5 z-30"
-      >
-        <div className="flex items-center gap-2.5">
-          <TrendingUp className="w-4 h-4 opacity-80" />
-          <div>
-            <p className="text-[10px] font-medium opacity-80">
-              效率提升
-            </p>
-            <p className="text-xl font-black leading-none">
-              +380%
-            </p>
-          </div>
-        </div>
-      </motion.div>
+          {/* ── Badge Collection Drawer ── */}
+          {showDrawer && (
+            <div className="absolute inset-x-0 bottom-0 top-12 bg-slate-950/95 backdrop-blur-xl z-30 p-4 transition-all duration-300 flex flex-col justify-between border-t border-slate-800">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🏅</span>
+                  <span className="text-xs font-bold text-white tracking-wider">
+                    PM 成就徽章收藏庫
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowDrawer(false)}
+                  className="text-slate-400 hover:text-white p-1 rounded-md text-xs font-bold cursor-pointer"
+                >
+                  ✕ 關閉
+                </button>
+              </div>
 
-      {/* Upcoming Meeting */}
-      <motion.div
-        animate={{ y: [0, -7, 0] }}
-        transition={{
-          duration: 5.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1.5,
-        }}
-        className="absolute bottom-4 left-4 w-68 bg-white rounded-2xl border border-gray-100 shadow-lg p-5 z-10"
-        style={{ width: "260px" }}
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <Calendar className="w-4 h-4 text-[#4F7DF7]" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-800">
-              下一場會議
-            </p>
-            <p className="text-xs text-gray-400">今天 14:30</p>
-          </div>
-        </div>
-        <p className="text-sm font-medium text-gray-800 leading-snug">
-          跨部會資料整合工作小組
-        </p>
-        <p className="text-xs text-gray-400 mt-1 mb-2">
-          與會者：5 人
-        </p>
-        <div className="flex gap-1.5">
-          {["資安", "API", "測試"].map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-0.5 bg-blue-50 text-[#4F7DF7] rounded-full font-medium"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </motion.div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 my-auto overflow-y-auto py-2">
+                {ALL_BADGES.map((badge) => {
+                  const unlocked = unlockedBadges.has(badge.id);
+                  return (
+                    <div
+                      key={badge.id}
+                      className={`p-2 rounded-xl border flex flex-col items-center justify-center text-center transition-all duration-300 ${
+                        unlocked
+                          ? "bg-slate-800/90 border-amber-400/60 text-white shadow-lg shadow-amber-500/10 scale-100"
+                          : "bg-slate-900/40 border-slate-800/80 text-slate-600 opacity-40 grayscale scale-95"
+                      }`}
+                    >
+                      <span className={`text-xl mb-1 ${unlocked ? "animate-pulse" : ""}`}>
+                        {badge.icon}
+                      </span>
+                      <span
+                        className={`text-[11px] font-bold truncate w-full ${
+                          unlocked ? "text-amber-300" : "text-slate-500"
+                        }`}
+                      >
+                        {badge.name}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
 
-      {/* Risk Overview */}
-      <motion.div
-        animate={{ y: [0, -9, 0] }}
-        transition={{
-          duration: 6.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.8,
-        }}
-        className="absolute bottom-0 right-2 w-52 bg-white rounded-2xl border border-gray-100 shadow-lg p-5 z-20"
-      >
-        <span className="text-sm font-semibold text-gray-800 block mb-3">
-          風險概覽
-        </span>
-        {[
-          { label: "高風險", count: 1, color: "#EF4444" },
-          { label: "中風險", count: 3, color: "#F59E0B" },
-          { label: "低風險", count: 7, color: "#22C55E" },
-        ].map((r, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between py-1.5"
-          >
-            <div className="flex items-center gap-2">
-              <div
-                className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: r.color }}
-              />
-              <span className="text-xs text-gray-600">
-                {r.label}
-              </span>
+              <p className="text-[10px] text-center text-slate-500 font-mono">
+                ※ 重新整理頁面 (F5) 後成就徽章進度將重置
+              </p>
             </div>
-            <span className="text-sm font-bold text-gray-800">
-              {r.count}
-            </span>
-          </div>
-        ))}
-      </motion.div>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 // ─── HERO ───────────────────────────────────────────────────────────────────
 
@@ -717,7 +1112,7 @@ function HeroSection() {
             <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 mb-8 shadow-sm">
               <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
               <span className="text-sm text-gray-500 font-medium">
-                專案管理師 × 資訊整合 × AI 應用
+                專案管理師 × 資訊整合
               </span>
             </div>
           </motion.div>
@@ -745,9 +1140,8 @@ function HeroSection() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-lg text-[#6B7280] leading-relaxed mb-10 max-w-lg"
           >
-            專注於政府數位轉型、跨機關資訊整合與 AI
-            工作流優化的資深專案管理師。
-            以系統化思維解決複雜問題，讓組織的每一個流程都更智慧、更高效。👌
+            在政府資訊專案中累積實務經驗，持續探索專案管理的更多可能。
+從業務需求出發，協助釐清問題、整理系統規格，並串聯業主與工程師，讓資訊系統真正回應需求，創造更好的公共服務價值。
           </motion.p>
 
           <motion.div
@@ -756,19 +1150,13 @@ function HeroSection() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="flex flex-wrap gap-4"
           >
-            <a
-              href="#projects"
-              className="flex items-center gap-2 bg-[#4F7DF7] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#3B6EF2] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            >
-              探索我的作品
-              <ArrowRight className="w-4 h-4" />
-            </a>
+            {/* 保留聯絡我按鈕（如需直接連到聯絡區塊可改 href="#contact"） */}
             <a
               href="#contact"
-              className="flex items-center gap-2 bg-white text-[#1F2937] font-semibold px-7 py-3.5 rounded-full border border-gray-200 hover:border-[#4F7DF7] hover:text-[#4F7DF7] transition-all duration-200 shadow-sm hover:shadow-md"
+              className="flex items-center gap-2 bg-[#4F7DF7] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#3B6EF2] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              <Download className="w-4 h-4" />
-              下載履歷
+              聯絡我
+              <ArrowRight className="w-4 h-4" />
             </a>
           </motion.div>
 
@@ -801,7 +1189,7 @@ function HeroSection() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <FloatingDashboard />
+          <PMSimulatorGame />
         </motion.div>
       </div>
     </section>
@@ -1182,10 +1570,10 @@ function ProjectsSection() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="mb-14">
           <p className="text-sm font-semibold text-[#4F7DF7] uppercase tracking-wider mb-3">
-            精選專案
+            工作能力與經驗介紹
           </p>
-          <h2 className="text-4xl font-black text-[#1F2937]">每個專案，<span className="text-[#4F7DF7]">都有完整故事。</span></h2>
-          <p className="text-[#6B7280] mt-3">點擊卡片查看完整案例研究</p>
+          <h2 className="text-4xl font-black text-[#1F2937]">每個專案，<span className="text-[#4F7DF7]">都有幾個難忘的故事。</span></h2>
+          <p className="text-[#6B7280] mt-3">點擊卡片查看完整事例說明</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1697,9 +2085,57 @@ function DashboardSection() {
 
 // ─── CONTACT ────────────────────────────────────────────────────────────────
 
+
 function ContactSection() {
+  const [showModal, setShowModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
+
+  // 表單欄位狀態
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // 處理表單送出
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(false);
+
+    try {
+      // 💡 請將下方 "https://formspree.io/f/你的表單ID" 換成你在 Formspree 註冊取得的專屬網址
+      const response = await fetch("https://formspree.io/f/mwlvdlvn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      setError(true);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <section id="contact" className="py-32 bg-[#1F2937]">
+    <section id="contact" className="py-32 bg-[#1F2937] relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
         <p className="text-sm font-semibold text-[#4F7DF7] uppercase tracking-wider mb-6">
           聯絡我
@@ -1709,48 +2145,200 @@ function ContactSection() {
           <span className="text-[#4F7DF7]">更好的事物。</span>
         </h2>
         <p className="text-lg text-gray-400 mb-14 max-w-lg mx-auto leading-relaxed">
-          無論是專案合作、顧問諮詢或只是想交流想法，都歡迎與我聯繫。
+          無論是想聊聊正事或是興趣，都期待您的聯繫。
         </p>
 
+        {/* ── 按鈕區塊 ── */}
         <div className="flex flex-wrap justify-center gap-4">
-          {[
-            {
-              label: "寄信給我",
-              Icon: Mail,
-              href: "mailto:eric@example.com",
-              primary: true,
-            },
-            { label: "LinkedIn", Icon: Linkedin, href: "#" },
-            { label: "GitHub", Icon: Github, href: "#" },
-            { label: "下載履歷", Icon: Download, href: "#" },
-          ].map((btn) => (
-            <a
-              key={btn.label}
-              href={btn.href}
-              className={`flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold transition-all duration-200 ${
-                btn.primary
-                  ? "bg-[#4F7DF7] text-white hover:bg-[#3B6EF2] shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                  : "bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:-translate-y-0.5"
-              }`}
-            >
-              <btn.Icon className="w-4 h-4" />
-              {btn.label}
-            </a>
-          ))}
+          {/* 按鈕 1：開啟留言小卡 Modal */}
+          <button
+            onClick={() => {
+              setShowModal(true);
+              setSubmitted(false); // 每次打開重置狀態
+            }}
+            className="flex items-center gap-2.5 px-8 py-4 rounded-full font-semibold transition-all duration-200 bg-[#4F7DF7] text-white hover:bg-[#3B6EF2] shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+          >
+            <Mail className="w-4 h-4" />
+            寄信給我
+          </button>
+
+          {/* 按鈕 2：104履歷 */}
+          <a
+            href="https://pda.104.com.tw/profile/share/gyZcGM6wpwqcuEU3PKlsC5qx3VxsrwGG"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 px-8 py-4 rounded-full font-semibold transition-all duration-200 bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:-translate-y-0.5 cursor-pointer"
+          >
+            <ExternalLink className="w-4 h-4" />
+            104履歷
+          </a>
         </div>
 
-        <div className="mt-24 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="text-2xl font-black text-[#4F7DF7]">
-            Eric.
-          </span>
-          <p className="text-sm text-gray-500">
-            © 2024 Eric · 專案管理師 × 資訊整合 × AI
-          </p>
-          <p className="text-sm text-gray-500">
-            Designed with care ✦
-          </p>
+        {/* ── 頁尾資訊（已調整為完美三欄居中結構） ── */}
+        <div className="mt-24 pt-8 border-t border-white/10 flex flex-col md:grid md:grid-cols-3 items-center justify-between gap-4 text-center md:text-left">
+          {/* 左欄：品牌名稱 */}
+          <div className="flex justify-center md:justify-start">
+            <span className="text-2xl font-black text-[#4F7DF7] tracking-tight">
+              Eric.
+            </span>
+          </div>
+
+          {/* 中欄：版權與定位（置中） */}
+          <div className="flex justify-center">
+            <p className="text-xs sm:text-sm text-gray-400 font-medium whitespace-nowrap">
+              © 2026 Eric · 專案管理 × 資訊整合
+            </p>
+          </div>
+
+          {/* 右欄：工具致謝 */}
+          <div className="flex justify-center md:justify-end">
+            <p className="text-xs sm:text-sm text-gray-500 font-mono">
+              Made with <span className="text-[#4F7DF7]">ChatGPT</span> · <span className="text-[#4F7DF7]">Gemini</span> · <span className="text-[#4F7DF7]">Figma</span>
+            </p>
+          </div>
         </div>
       </div>
+
+      {/* ── 彈出式留言小卡 Modal ── */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-[#111827] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-left">
+            
+            {/* Modal 頂部標題與關閉按鈕 */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-[#4F7DF7]/10 text-[#4F7DF7]">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">傳送訊息給 Eric</h3>
+                  <p className="text-xs text-gray-400">填寫下方留言，將直接發送至我的信箱</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 若已成功送出顯示感謝畫面 */}
+            {submitted ? (
+              <div className="py-12 text-center space-y-4">
+                <div className="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <h4 className="text-xl font-bold text-white">留言已成功送出！</h4>
+                <p className="text-sm text-gray-400 max-w-xs mx-auto">
+                  感謝您的聯繫，訊息已經順利寄到 Eric 的信箱，我會盡快回覆您！
+                </p>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="mt-4 px-6 py-2.5 rounded-full bg-slate-800 text-white font-semibold text-sm hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  關閉視窗
+                </button>
+              </div>
+            ) : (
+              /* 留言表單 */
+              <form onSubmit={handleSubmit} className="space-y-4 my-6">
+                
+                {/* 欄位 1：如何稱呼 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[#4F7DF7]" /> 如何稱呼 *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="例如：王經理 / John"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-[#4F7DF7] transition-colors"
+                  />
+                </div>
+
+                {/* 欄位 2：聯絡信箱 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-[#4F7DF7]" /> 電子信箱 *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="name@example.com"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-[#4F7DF7] transition-colors"
+                  />
+                </div>
+
+                {/* 欄位 3：聯絡電話 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[#4F7DF7]" /> 聯絡電話(選填)
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="0912-345-678"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-[#4F7DF7] transition-colors"
+                  />
+                </div>
+
+                {/* 欄位 4：留言內容 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-[#4F7DF7]" /> 留言內容 *
+                  </label>
+                  <textarea
+                    name="message"
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="請輸入想聊聊的專案或合作機會..."
+                    className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:outline-none focus:border-[#4F7DF7] transition-colors resize-none"
+                  />
+                </div>
+
+                {error && (
+                  <p className="text-xs text-red-400 text-center">
+                    傳送失敗，請稍後再試一次，或直接複製信箱與我聯繫。
+                  </p>
+                )}
+
+                {/* 送出按鈕 */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold bg-[#4F7DF7] text-white hover:bg-[#3B6EF2] transition-all shadow-lg hover:shadow-xl cursor-pointer disabled:opacity-50"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> 正在傳送中...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" /> 確認送出留言
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* Modal 底部小提示 */}
+            <p className="text-[11px] text-gray-500 text-center font-mono pt-2 border-t border-slate-800/60">
+              fiying0788@gmail.com ·僅作個人聯絡用途，絕對不會將您的個資外洩
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
