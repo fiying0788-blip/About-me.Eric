@@ -1144,43 +1144,35 @@ function HeroSection() {
 從業務需求出發，協助釐清問題、整理系統規格，並串聯業主與工程師，讓資訊系統真正回應需求，創造更好的公共服務價值。
           </motion.p>
 
+          {/* ── 整合後的按鈕與標籤區塊（方案 C） ── */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-wrap gap-4"
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-8 pt-8 border-t border-gray-200/60"
           >
-            {/* 保留聯絡我按鈕（如需直接連到聯絡區塊可改 href="#contact"） */}
             <a
               href="#contact"
-              className="flex items-center gap-2 bg-[#4F7DF7] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#3B6EF2] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              className="flex items-center gap-2 bg-[#4F7DF7] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#3B6EF2] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
             >
               聯絡我
               <ArrowRight className="w-4 h-4" />
             </a>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="flex items-center gap-6 mt-12"
-          >
-            {[
-              { label: "1.5 年經驗", icon: "🏅" },
-              { label: "系統整合", icon: "🖥️" },
-              { label: "政府專案", icon: "🏛️" },
-            ].map((b) => (
-              <div
-                key={b.label}
-                className="flex items-center gap-2"
-              >
-                <span>{b.icon}</span>
-                <span className="text-sm text-[#6B7280] font-medium">
-                  {b.label}
-                </span>
-              </div>
-            ))}
+            <div className="flex items-center gap-5 sm:gap-6">
+              {[
+                { label: "1.5 年經驗", icon: "🏅" },
+                { label: "系統整合", icon: "🖥️" },
+                { label: "政府專案", icon: "🏛️" },
+              ].map((b) => (
+                <div key={b.label} className="flex items-center gap-1.5">
+                  <span>{b.icon}</span>
+                  <span className="text-xs sm:text-sm text-[#6B7280] font-medium whitespace-nowrap">
+                    {b.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
 
