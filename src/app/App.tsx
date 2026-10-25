@@ -333,7 +333,7 @@ const ACHIEVEMENTS = [
   },
   {
     label: "撰寫規格文件數",
-    value: 1000,
+    value: 50,
     suffix: "+",
     Icon: Users,
     color: "#10B981",
