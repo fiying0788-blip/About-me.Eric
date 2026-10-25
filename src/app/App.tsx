@@ -859,16 +859,16 @@ export const PMSimulatorGame = () => {
           </div>
         </div>
 
-        {/* ── Game Viewport ── */}
+{/* ── Game Viewport ── */}
         <div
-          className="relative bg-[#0F172A] p-5 flex flex-col justify-between text-white overflow-hidden"
+          className="relative bg-[#0F172A] p-3 flex flex-col justify-between text-white overflow-hidden"
           style={{ height: isZoomed ? 580 : 480 }}
         >
           {/* 頂部 Status Bar */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3 z-10">
-            <div className="flex items-center gap-2.5">
-              <span className="text-xs text-slate-400 font-semibold">猜你可能想了解</span>
-              <div className="w-28 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2 z-10">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-400 font-semibold">猜你可能想了解</span>
+              <div className="w-24 bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
                 <div
                   className="h-full rounded-full transition-all duration-300"
                   style={{
@@ -877,12 +877,12 @@ export const PMSimulatorGame = () => {
                   }}
                 />
               </div>
-              <span className="text-xs font-bold text-teal-400 font-mono">
+              <span className="text-sm font-bold text-teal-400 font-mono">
                 {satisfaction}%
               </span>
             </div>
             <div>
-              <span className="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2.5 py-0.5 rounded-full font-mono">
+              <span className="text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-full font-mono">
                 STAGE {Math.min(currentStageIndex + 1, 5)}/5
               </span>
             </div>
@@ -890,16 +890,16 @@ export const PMSimulatorGame = () => {
 
           {/* ── State 1: Start Screen ── */}
           {gameState === "start" && (
-            <div className="flex flex-col items-center justify-center h-full text-center z-20">
-              <h3 className="text-xl font-black text-white mb-2">
+            <div className="flex flex-col items-center justify-center h-full text-center z-20 px-4">
+              <h3 className="text-lg font-black text-white mb-2">
                 一起坐下聊聊關於我的經歷吧!
               </h3>
-              <p className="text-xs text-slate-400 mb-6 max-w-xs mx-auto leading-relaxed">
+              <p className="text-sm text-slate-300 mb-5 max-w-xs mx-auto leading-relaxed">
                 接下來共有 5 題的機會，您可以挑選問題聊聊，我也設計了10種成就，看看能不能全拿~
               </p>
               <button
                 onClick={startGame}
-                className="bg-[#4F7DF7] hover:bg-[#3B6EF2] text-xs font-bold px-7 py-3 rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+                className="bg-[#4F7DF7] hover:bg-[#3B6EF2] text-sm font-bold px-6 py-2.5 rounded-full transition-all shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
               >
                 開始!
               </button>
@@ -908,13 +908,13 @@ export const PMSimulatorGame = () => {
 
           {/* ── State 2: Gameplay ── */}
           {gameState === "play" && (
-            <div className="flex-1 my-2 flex flex-col justify-between space-y-2.5">
+            <div className="flex-1 my-1 flex flex-col justify-between space-y-2">
               {/* 頂部對話與卡片 Grid */}
-              <div className="grid grid-cols-12 gap-3 h-[190px]">
+              <div className="grid grid-cols-12 gap-2 h-[175px]">
                 {/* 左側：像素頭像與 PM 對話框 */}
-                <div className="col-span-7 bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex items-start gap-2.5 overflow-y-auto">
+                <div className="col-span-7 bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl flex items-start gap-2 overflow-y-auto">
                   <div className="flex flex-col items-center flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full border border-teal-500/50 overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full border border-teal-500/50 overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
                       <svg
                         viewBox="0 0 64 64"
                         fill="none"
@@ -950,30 +950,29 @@ export const PMSimulatorGame = () => {
                         <rect x="40" y="52" width="5" height="5" rx="2" fill="#FED7AA" />
                       </svg>
                     </div>
-                    <span className="text-[10px] text-teal-400 font-mono mt-1">Eric T.</span>
+                    <span className="text-[11px] text-teal-400 font-mono mt-0.5 font-semibold">Eric T.</span>
                   </div>
 
-                  <div className="bg-slate-800 border border-slate-700/80 rounded-lg p-2.5 text-left flex-1 min-h-full flex flex-col justify-center">
-                    <p className="text-[10px] text-teal-400 font-bold mb-1"> </p>
-                    <p className="text-xs text-slate-200 leading-relaxed">{ericResponse}</p>
+                  <div className="bg-slate-800 border border-slate-700/80 rounded-lg p-2 text-left flex-1 min-h-full flex flex-col justify-center">
+                    <p className="text-sm text-slate-200 leading-relaxed font-medium">{ericResponse}</p>
                   </div>
                 </div>
 
                 {/* 右側：輔助資訊卡 */}
-                <div className="col-span-5 bg-slate-950/80 border border-slate-800 p-3 rounded-xl flex flex-col justify-between overflow-y-auto text-left">
-                  <div className="flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
-                    <span className="text-base">{auxData.icon}</span>
+                <div className="col-span-5 bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl flex flex-col justify-between overflow-y-auto text-left">
+                  <div className="flex items-center gap-1 border-b border-slate-800 pb-1">
+                    <span className="text-sm">{auxData.icon}</span>
                     <span className="text-xs text-teal-300 font-bold truncate">{auxData.title}</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed my-auto whitespace-pre-line">
+                  <p className="text-xs text-slate-300 leading-relaxed my-auto whitespace-pre-line font-medium">
                     {auxData.desc}
                   </p>
                 </div>
               </div>
 
               {/* 中間提示列 */}
-              <div className="bg-slate-950/60 border border-slate-800 px-3.5 py-1.5 rounded-lg text-left">
-                <p className="text-xs text-slate-300 font-medium truncate">
+              <div className="bg-slate-950/60 border border-slate-800 px-3 py-1 rounded-lg text-left">
+                <p className="text-xs text-slate-200 font-semibold truncate">
                   {selectedOptionKey
                     ? "想再了解什麼~："
                     : stage.prompt}
@@ -981,13 +980,13 @@ export const PMSimulatorGame = () => {
               </div>
 
               {/* 下方選項按鈕 */}
-              <div className="space-y-2 min-h-[160px] flex flex-col justify-center">
+              <div className="space-y-1.5 min-h-[135px] flex flex-col justify-center">
                 {!selectedOptionKey ? (
                   stage.options.map((opt) => (
                     <button
                       key={opt.key}
                       onClick={() => handleOptionSelect(opt)}
-                      className="w-full text-left py-2 px-3 rounded-lg bg-slate-800/90 border border-slate-700/80 hover:border-[#4F7DF7] hover:bg-slate-800 transition-all duration-200 text-xs text-slate-100 flex items-center justify-between group cursor-pointer shadow-sm"
+                      className="w-full text-left py-2 px-3 rounded-lg bg-slate-800/90 border border-slate-700/80 hover:border-[#4F7DF7] hover:bg-slate-800 transition-all duration-200 text-xs sm:text-sm text-slate-100 flex items-center justify-between group cursor-pointer shadow-sm font-medium"
                     >
                       <span className="group-hover:text-[#4F7DF7] transition-colors truncate">
                         {opt.label}
@@ -998,7 +997,7 @@ export const PMSimulatorGame = () => {
                 ) : (
                   <button
                     onClick={nextStage}
-                    className="w-full py-2.5 bg-[#50B8AF] hover:bg-[#439c94] text-slate-900 font-bold text-xs rounded-lg transition-all shadow-md flex items-center justify-center space-x-1 cursor-pointer"
+                    className="w-full py-2 bg-[#50B8AF] hover:bg-[#439c94] text-slate-900 font-bold text-xs sm:text-sm rounded-lg transition-all shadow-md flex items-center justify-center space-x-1 cursor-pointer"
                   >
                     <span>
                       {currentStageIndex < GAME_STAGES.length - 1 ? "進入下一關" : "查看結果"}
@@ -1012,11 +1011,11 @@ export const PMSimulatorGame = () => {
 
           {/* ── State 3: Result Screen ── */}
           {gameState === "result" && (
-            <div className="flex flex-col items-center justify-center h-full text-center z-20">
-              <h3 className="text-xl font-black text-white mb-2">
+            <div className="flex flex-col items-center justify-center h-full text-center z-20 px-4">
+              <h3 className="text-lg font-black text-white mb-2">
                 {getResultText().title}
               </h3>
-              <p className="text-xs text-slate-300 mb-6 max-w-sm mx-auto leading-relaxed">
+              <p className="text-sm text-slate-200 mb-5 max-w-sm mx-auto leading-relaxed">
                 {getResultText().desc}
               </p>
 
@@ -1040,7 +1039,7 @@ export const PMSimulatorGame = () => {
 
           {/* ── Badge Collection Drawer ── */}
           {showDrawer && (
-            <div className="absolute inset-x-0 bottom-0 top-12 bg-slate-950/95 backdrop-blur-xl z-30 p-4 transition-all duration-300 flex flex-col justify-between border-t border-slate-800">
+            <div className="absolute inset-x-0 bottom-0 top-10 bg-slate-950/95 backdrop-blur-xl z-30 p-4 transition-all duration-300 flex flex-col justify-between border-t border-slate-800">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-base">🏅</span>
@@ -1056,7 +1055,7 @@ export const PMSimulatorGame = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 my-auto overflow-y-auto py-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 my-auto overflow-y-auto py-1">
                 {ALL_BADGES.map((badge) => {
                   const unlocked = unlockedBadges.has(badge.id);
                   return (
@@ -1068,7 +1067,7 @@ export const PMSimulatorGame = () => {
                           : "bg-slate-900/40 border-slate-800/80 text-slate-600 opacity-40 grayscale scale-95"
                       }`}
                     >
-                      <span className={`text-xl mb-1 ${unlocked ? "animate-pulse" : ""}`}>
+                      <span className={`text-xl mb-0.5 ${unlocked ? "animate-pulse" : ""}`}>
                         {badge.icon}
                       </span>
                       <span
