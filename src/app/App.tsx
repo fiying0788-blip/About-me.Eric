@@ -2156,7 +2156,7 @@ function ContactSection() {
 
           {/* 按鈕 2：104履歷 */}
           <a
-            href="https://pda.104.com.tw/profile/share/gyZcGM6wpwqcuEU3PKlsC5qx3VxsrwGG"
+            href="https://pda.104.com.tw/profile/share/iaUOb9T9QseCrQHTxTYUTHdVzpqEZ7co"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 px-8 py-4 rounded-full font-semibold transition-all duration-200 bg-white/10 text-white hover:bg-white/20 border border-white/20 hover:-translate-y-0.5 cursor-pointer"
