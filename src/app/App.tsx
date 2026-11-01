@@ -2376,12 +2376,12 @@ function AIChat() {
   return (
     <>
       {/* Floating button */}
-      <button
+      {/* <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-[#4F7DF7] text-white rounded-full shadow-xl hover:bg-[#3B6EF2] hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center"
       >
         <Bot className="w-6 h-6" />
-      </button>
+      </button> */}
 
       {/* Chat panel */}
       {open && (
